@@ -65,3 +65,7 @@ using any JS framework in this project
 Do not modify any other part of the page.
 
 git commit -m "landing: add youtube modal on see how it works click"
+
+merge @static/css/landing.css and @static/css/style.css into one single css file
+
+git commit -m "landing: merge landing.css into style.css"
