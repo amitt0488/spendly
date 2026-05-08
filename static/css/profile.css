@@ -104,7 +104,7 @@
     background: var(--paper-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
-    padding: 1.25rem 1.5rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -199,7 +199,7 @@
 
 .profile-badge {
     display: inline-block;
-    padding: 0.2rem 0.65rem;
+    padding: 0.25rem 0.75rem;
     border-radius: var(--radius-sm);
     font-size: 0.78rem;
     font-weight: 500;
