@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, abort, session
-from database.db import get_db, init_db, seed_db, get_user_by_email, create_user, get_user_by_id
+from database.db import get_db, init_db, seed_db, get_user_by_email, create_user
+from database.queries import get_user_by_id, get_summary_stats, get_recent_transactions, get_category_breakdown
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -102,33 +103,14 @@ def profile():
     if not session.get("user_id"):
         return redirect(url_for("login"))
 
-    user = {
-        "name": "Nitish Kumar",
-        "email": "nitish@example.com",
-        "initials": "NK",
-        "member_since": "January 2026",
-    }
-    stats = {
-        "total_spent": "24,340",
-        "transaction_count": 12,
-        "top_category": "Food",
-    }
-    transactions = [
-        {"date": "08 May 2026", "description": "Groceries at DMart",    "category": "Shopping",      "amount": "2,200"},
-        {"date": "07 May 2026", "description": "Movie tickets — PVR",    "category": "Entertainment", "amount": "350"},
-        {"date": "05 May 2026", "description": "Pharmacy — vitamins",    "category": "Health",        "amount": "800"},
-        {"date": "03 May 2026", "description": "Electricity bill",        "category": "Bills",         "amount": "1,500"},
-        {"date": "02 May 2026", "description": "Uber to airport",         "category": "Transport",     "amount": "120"},
-        {"date": "01 May 2026", "description": "Lunch at café",           "category": "Food",          "amount": "450"},
-    ]
-    categories = [
-        {"name": "Food",          "amount": "7,840", "percent": 72},
-        {"name": "Shopping",      "amount": "6,200", "percent": 57},
-        {"name": "Bills",         "amount": "4,500", "percent": 41},
-        {"name": "Health",        "amount": "3,200", "percent": 29},
-        {"name": "Entertainment", "amount": "1,600", "percent": 15},
-        {"name": "Transport",     "amount": "1,000", "percent": 9},
-    ]
+    user = get_user_by_id(session["user_id"])
+    if user is None:
+        abort(404)
+
+    stats = get_summary_stats(session["user_id"])
+    transactions = get_recent_transactions(session["user_id"])
+    categories = get_category_breakdown(session["user_id"])
+
     return render_template("profile.html", user=user, stats=stats,
                            transactions=transactions, categories=categories)
 
