@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile — Spendly{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="profile-page">
+    <div class="profile-inner">
+
+        <!-- User info card -->
+        <div class="profile-card profile-card--user">
+            <div class="profile-avatar" aria-hidden="true">{{ user.initials }}</div>
+            <div class="profile-identity">
+                <h1 class="profile-name">{{ user.name }}</h1>
+                <p class="profile-email">{{ user.email }}</p>
+                <p class="profile-member-since">Member since {{ user.member_since }}</p>
+            </div>
+        </div>
+
+        <!-- Summary stats -->
+        <div class="profile-stats-row">
+            <div class="profile-stat-card">
+                <span class="profile-stat-label">Total Spent</span>
+                <span class="profile-stat-value">₹{{ stats.total_spent }}</span>
+            </div>
+            <div class="profile-stat-card">
+                <span class="profile-stat-label">Transactions</span>
+                <span class="profile-stat-value profile-stat-value--plain">{{ stats.transaction_count }}</span>
+            </div>
+            <div class="profile-stat-card">
+                <span class="profile-stat-label">Top Category</span>
+                <span class="profile-stat-value profile-stat-value--plain">{{ stats.top_category }}</span>
+            </div>
+        </div>
+
+        <!-- Transaction history -->
+        <div class="profile-card">
+            <h2 class="profile-section-title">
+                <i data-lucide="credit-card"></i>
+                Recent Transactions
+            </h2>
+            <div class="profile-table-wrap">
+                <table class="profile-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th class="profile-table__amount-col">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tx in transactions %}
+                        <tr>
+                            <td class="profile-table__date">{{ tx.date }}</td>
+                            <td>{{ tx.description }}</td>
+                            <td>
+                                <span class="profile-badge profile-badge--{{ tx.category | lower }}">
+                                    {{ tx.category }}
+                                </span>
+                            </td>
+                            <td class="profile-table__amount">₹{{ tx.amount }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Category breakdown -->
+        <div class="profile-card">
+            <h2 class="profile-section-title">
+                <i data-lucide="pie-chart"></i>
+                Spending by Category
+            </h2>
+            <ul class="profile-categories" role="list">
+                {% for cat in categories %}
+                <li class="profile-category-row">
+                    <div class="profile-category-meta">
+                        <span class="profile-category-name">{{ cat.name }}</span>
+                        <span class="profile-category-amount">₹{{ cat.amount }}</span>
+                    </div>
+                    <div class="profile-bar-track"
+                         role="progressbar"
+                         aria-valuenow="{{ cat.percent }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-label="{{ cat.name }} spending">
+                        <div class="profile-bar-fill profile-bar-fill--{{ cat.name | lower }}"
+                             style="width: {{ cat.percent }}%"></div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    lucide.createIcons();
+  });
+</script>
+{% endblock %}

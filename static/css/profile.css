@@ -1,0 +1,331 @@
+/* ------------------------------------------------------------------ */
+/* Profile page layout                                                 */
+/* ------------------------------------------------------------------ */
+
+.profile-page {
+    padding: 3rem 2rem 5rem;
+}
+
+.profile-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Shared card shell                                                   */
+/* ------------------------------------------------------------------ */
+
+.profile-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+}
+
+.profile-section-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profile-section-title svg {
+    width: 20px;
+    height: 20px;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Section 1: User info card                                           */
+/* ------------------------------------------------------------------ */
+
+.profile-card--user {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.profile-avatar {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--paper-card);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.02em;
+}
+
+.profile-identity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.profile-name {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--ink);
+    line-height: 1.2;
+}
+
+.profile-email {
+    font-size: 0.95rem;
+    color: var(--ink-muted);
+}
+
+.profile-member-since {
+    font-size: 0.875rem;
+    color: var(--ink-faint);
+}
+
+/* ------------------------------------------------------------------ */
+/* Section 2: Stats row                                                */
+/* ------------------------------------------------------------------ */
+
+.profile-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.profile-stat-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.profile-stat-label {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    font-weight: 500;
+}
+
+.profile-stat-value {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--ink);
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+}
+
+.profile-stat-value--plain {
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* ------------------------------------------------------------------ */
+/* Section 3: Transaction table                                        */
+/* ------------------------------------------------------------------ */
+
+.profile-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.profile-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.profile-table thead th {
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0 1rem 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-table tbody tr {
+    border-bottom: 1px solid var(--border-soft);
+    transition: background 0.15s;
+}
+
+.profile-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.profile-table tbody tr:hover {
+    background: var(--paper-warm);
+}
+
+.profile-table tbody td {
+    padding: 1rem 1rem 1rem 0;
+    color: var(--ink-soft);
+    vertical-align: middle;
+}
+
+.profile-table__date {
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.profile-table__amount-col {
+    text-align: right;
+}
+
+.profile-table__amount {
+    text-align: right;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------ */
+/* Category badges                                                     */
+/* ------------------------------------------------------------------ */
+
+.profile-badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.profile-badge--food {
+    background: var(--accent-2-light);
+    color: var(--accent-2);
+}
+
+.profile-badge--shopping {
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
+.profile-badge--bills {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.profile-badge--health {
+    background: var(--accent-light);
+    color: var(--accent);
+}
+
+.profile-badge--entertainment {
+    background: var(--paper-warm);
+    color: var(--ink-soft);
+    border: 1px solid var(--border);
+}
+
+.profile-badge--transport {
+    background: var(--accent-2-light);
+    color: var(--accent-2);
+}
+
+.profile-badge--other {
+    background: var(--paper-warm);
+    color: var(--ink-muted);
+    border: 1px solid var(--border-soft);
+}
+
+/* ------------------------------------------------------------------ */
+/* Section 4: Category breakdown bars                                  */
+/* ------------------------------------------------------------------ */
+
+.profile-categories {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.profile-category-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.profile-category-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.profile-category-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+}
+
+.profile-category-amount {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.profile-bar-track {
+    height: 8px;
+    background: var(--border-soft);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.profile-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+
+.profile-bar-fill--food          { background: var(--accent-2); }
+.profile-bar-fill--shopping      { background: var(--accent); }
+.profile-bar-fill--bills         { background: var(--danger); }
+.profile-bar-fill--health        { background: var(--accent); }
+.profile-bar-fill--entertainment { background: var(--ink-muted); }
+.profile-bar-fill--transport     { background: var(--accent-2); }
+.profile-bar-fill--other         { background: var(--ink-faint); }
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                          */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 700px) {
+    .profile-stats-row {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-card--user {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-table thead th,
+    .profile-table tbody td {
+        padding-right: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-page {
+        padding: 1.5rem 1rem 3rem;
+    }
+
+    .profile-card {
+        padding: 1.25rem;
+    }
+}
