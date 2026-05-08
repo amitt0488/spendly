@@ -1,7 +1,10 @@
-from flask import Flask, render_template
-from database.db import get_db, init_db, seed_db
+import os
+from flask import Flask, render_template, request, redirect, url_for, abort
+from database.db import get_db, init_db, seed_db, get_user_by_email, create_user
+from werkzeug.security import generate_password_hash
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-production")
 
 with app.app_context():
     init_db()
@@ -17,9 +20,35 @@ def landing():
     return render_template("landing.html")
 
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    return render_template("register.html")
+    if request.method == "GET":
+        return render_template("register.html")
+
+    name = request.form.get("name", "").strip()
+    email = request.form.get("email", "").strip().lower()
+    password = request.form.get("password", "")
+
+    if not name:
+        return render_template("register.html", error="Name is required.")
+    if len(name) > 100:
+        return render_template("register.html", error="Name must be 100 characters or fewer.")
+
+    if not email:
+        return render_template("register.html", error="Email address is required.")
+    if "@" not in email:
+        return render_template("register.html", error="Enter a valid email address.")
+
+    if not password:
+        return render_template("register.html", error="Password is required.")
+    if len(password) < 8:
+        return render_template("register.html", error="Password must be at least 8 characters.")
+
+    if get_user_by_email(email):
+        return render_template("register.html", error="An account with that email already exists.")
+
+    create_user(name, email, generate_password_hash(password))
+    return redirect(url_for("login"))
 
 
 @app.route("/login")
