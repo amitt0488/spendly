@@ -1,4 +1,5 @@
 import os
+from datetime import datetime, date
 from flask import Flask, render_template, request, redirect, url_for, abort, session
 from database.db import get_db, init_db, seed_db, get_user_by_email, create_user
 from database.queries import get_user_by_id, get_summary_stats, get_recent_transactions, get_category_breakdown
@@ -10,6 +11,46 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-production")
 with app.app_context():
     init_db()
     seed_db()
+
+
+def _month_offset(ref_date, months):
+    """Return the first day of the month `months` before ref_date's month."""
+    month = ref_date.month - months
+    year = ref_date.year + (month - 1) // 12
+    month = ((month - 1) % 12) + 1
+    return date(year, month, 1)
+
+
+def _parse_date_filter(raw_from, raw_to, preset):
+    """Validate date filter query params; return (df_str, dt_str, raw_from, raw_to, active_preset, error)."""
+    filter_error = None
+    date_from = None
+    date_to = None
+
+    try:
+        if raw_from:
+            date_from = datetime.strptime(raw_from, "%Y-%m-%d").date()
+    except ValueError:
+        date_from = None
+        raw_from = ""
+
+    try:
+        if raw_to:
+            date_to = datetime.strptime(raw_to, "%Y-%m-%d").date()
+    except ValueError:
+        date_to = None
+        raw_to = ""
+
+    if date_from and date_to and date_from > date_to:
+        filter_error = "Start date must be before end date."
+        date_from = date_to = None
+        raw_from = raw_to = ""
+
+    df_str = date_from.isoformat() if date_from else None
+    dt_str = date_to.isoformat() if date_to else None
+    active_preset = preset or ("custom" if (df_str or dt_str) else "all")
+
+    return df_str, dt_str, raw_from, raw_to, active_preset, filter_error
 
 
 # ------------------------------------------------------------------ #
@@ -107,12 +148,39 @@ def profile():
     if user is None:
         abort(404)
 
-    stats = get_summary_stats(session["user_id"])
-    transactions = get_recent_transactions(session["user_id"])
-    categories = get_category_breakdown(session["user_id"])
+    df_str, dt_str, raw_from, raw_to, active_preset, filter_error = _parse_date_filter(
+        request.args.get("date_from", ""),
+        request.args.get("date_to", ""),
+        request.args.get("preset", ""),
+    )
 
-    return render_template("profile.html", user=user, stats=stats,
-                           transactions=transactions, categories=categories)
+    today = date.today()
+    first_of_month = today.replace(day=1)
+    preset_urls = {
+        "this_month": url_for("profile", preset="this_month",
+                              date_from=first_of_month.isoformat(),
+                              date_to=today.isoformat()),
+        "last_3_months": url_for("profile", preset="last_3_months",
+                                 date_from=_month_offset(today, 3).isoformat(),
+                                 date_to=today.isoformat()),
+        "last_6_months": url_for("profile", preset="last_6_months",
+                                 date_from=_month_offset(today, 6).isoformat(),
+                                 date_to=today.isoformat()),
+        "all": url_for("profile"),
+    }
+
+    stats = get_summary_stats(session["user_id"], df_str, dt_str)
+    transactions = get_recent_transactions(session["user_id"], date_from=df_str, date_to=dt_str)
+    categories = get_category_breakdown(session["user_id"], df_str, dt_str)
+
+    return render_template(
+        "profile.html",
+        user=user, stats=stats, transactions=transactions, categories=categories,
+        date_from=raw_from, date_to=raw_to,
+        active_preset=active_preset,
+        preset_urls=preset_urls,
+        filter_error=filter_error,
+    )
 
 
 @app.route("/expenses/add")
